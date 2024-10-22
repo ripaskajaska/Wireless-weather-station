@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Weather-station-project-imported-compnents")(type "KiCad")(uri "${KIPRJMOD}/Weather-station-project-imported-compnents.kicad_sym")(options "")(descr ""))
+)
