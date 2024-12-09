@@ -38,8 +38,8 @@ void measure_relative_humidity(float* humidity_ptr);
 void measure_battery_voltage(float* battery_voltage_ptr);
 uint8_t readReg(uint8_t reg, void* pBuf, size_t size);
 
-void sendFloatArray(const float* values, size_t count) {
-  driver.send((uint8_t*)values, count * sizeof(float));
+void sendFloatArray() {
+  driver.send((uint8_t*)floatValueArray, 4 * sizeof(float));
   driver.waitPacketSent();
 }
 
@@ -114,7 +114,7 @@ void loop() {
   Serial.print("Battery Voltage (V): ");
   Serial.println(battery_voltage);
 
-  sendFloatArray(&floatValueArray, 4);
+  sendFloatArray();
   digitalWrite(3, HIGH);
   delay(5);  // Wait for a second before sending again
   digitalWrite(3, LOW);
