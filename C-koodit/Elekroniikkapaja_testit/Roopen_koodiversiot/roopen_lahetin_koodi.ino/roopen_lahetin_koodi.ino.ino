@@ -48,8 +48,12 @@ void setup() {
   Serial.begin(9600);
   while (!Serial);
 
+  
   // Initialize I2C
   Wire.begin(); // This uses PC0 (SCL) and PC1 (SDA) by default on ATmega644A
+
+  // Initialize the RadioHead driver
+  driver.init();
 
   // Initialize sensors
   sensors.begin();
