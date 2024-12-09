@@ -30,16 +30,18 @@ Adafruit_BMP280 bmp(BMP_CS); // Hardware SPI
 RH_ASK driver(2000, PA2, 4, PA3);  // (bitrate, RX pin, TX pin, PTT pin)
 
 // Function to send a float array
-void sendFloatArray(const float* values, size_t count) {
-  driver.send((uint8_t*)values, count * sizeof(float));
-  driver.waitPacketSent();
-}
+
 // Function prototypes
 void measure_temperature(float* temp_ptr);
 void measure_barometric_pressure(float* pressure_ptr);
 void measure_relative_humidity(float* humidity_ptr);
 void measure_battery_voltage(float* battery_voltage_ptr);
 uint8_t readReg(uint8_t reg, void* pBuf, size_t size);
+
+void sendFloatArray(const float* values, size_t count) {
+  driver.send((uint8_t*)values, count * sizeof(float));
+  driver.waitPacketSent();
+}
 
 void setup() {
   // Initialize Serial for debugging
@@ -67,6 +69,8 @@ void setup() {
   Serial.println("Setup completed. Starting measurements...");
   pinMode(BMP_CS, OUTPUT);
   pinMode(19, OUTPUT);
+  pinMode(3, OUTPUT);
+  digitalWrite(3, HIGH);
 }
 
 void loop() {
@@ -106,7 +110,7 @@ void loop() {
   Serial.print("Battery Voltage (V): ");
   Serial.println(battery_voltage);
 
-  sendFloatArray(floatValueArray, 4);
+  sendFloatArray(&floatValueArray, 4);
   digitalWrite(3, HIGH);
   delay(5);  // Wait for a second before sending again
   digitalWrite(3, LOW);
