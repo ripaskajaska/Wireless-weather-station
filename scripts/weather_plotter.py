@@ -59,7 +59,7 @@ def hourly_pressure_and_humidity():
         ax.set_xlabel('Hour')
         ax.set_ylabel("Pressure (hPa)")
         ax2.set_ylabel("Humidity (%)")
-        lines = [line1, line2]  # Add all lines from ax and ax2
+        lines = [line1, line2] 
         labels = ['Average pressure', 'Average humidity']
         ax.legend(lines, labels)
         plt.tight_layout()
@@ -78,8 +78,8 @@ def hourly_battery_voltage():
         fig, ax = plt.subplots(figsize=(21, 10))
         plt.title('Hourly Average Voltage')
         line1, = ax.plot(x, hourly_avg_vol, label='Average Voltage', color='orange', marker='o', linestyle='-', linewidth=2)
-        tick_positions = x  # All tick positions
-        label_positions = x[::3]  # Show a label for every second tick
+        tick_positions = x 
+        label_positions = x[::3]  
         labels = hourly_avg_vol.index.strftime('%H:%M')
         label_values = [label if i in label_positions else "" for i, label in enumerate(labels)]
         plt.xticks(tick_positions, label_values, rotation=45)             
