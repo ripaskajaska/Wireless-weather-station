@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.196.0/http/server.ts";
 
 let latestData: Record<string, any> | null = null; 
 let expirationTimeout: number | null = null;      
-const correctPassword: string = "peij00niSetit";
+const correctPassword: string = ""; //This is not public
 
 async function saveData(data: Record<string, any>) {
   let p = 0;
