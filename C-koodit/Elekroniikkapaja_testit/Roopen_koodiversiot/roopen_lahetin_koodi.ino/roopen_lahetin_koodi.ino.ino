@@ -4,6 +4,10 @@
 #include <Adafruit_BMP280.h>
 #include <Wire.h>
 #include <SPI.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+
 
 // Pin definitions for ATmega644A
 #define ONE_WIRE_BUS 18         // For Dallas DS1820
@@ -18,6 +22,8 @@ float battery_voltage = 0.0;
 uint8_t buf[4] = {0};
 float floatValueArray[4] = {0.0};
 uint16_t rawHumidity;
+volatile uint16_t timerOverflowCount = 0;  // Overflow counter
+
 
 // Initialize Dallas Temp DS1820
 OneWire oneWire(ONE_WIRE_BUS);        // OneWire instance
@@ -43,6 +49,40 @@ void sendFloatArray() {
   driver.waitPacketSent();
 }
 
+void setupTimer1() {
+    cli(); // Disable interrupts
+    // Configure Timer1
+    TCCR1B |= (1 << CS12) | (1 << CS10); // Prescaler = 1024
+    TIMSK1 |= (1 << TOIE1);              // Enable Timer1 Overflow Interrupt
+    TCNT1 = 0;                           // Reset the timer counter
+    sei(); //enable interrupts
+}
+
+// Interrupt Service Routine for Timer1 Overflow
+ISR(TIMER1_OVF_vect) {
+    timerOverflowCount++;  // Increment the overflow counter
+}
+
+void waitForMinute() {
+    const uint16_t requiredOverflows = (60) / 4.194; // Calculate required overflows (~14 for 16MHz clock)
+
+    timerOverflowCount = 0; // Reset the counter
+    set_sleep_mode(SLEEP_MODE_IDLE); // Use Idle mode for sleep
+
+    while (timerOverflowCount < requiredOverflows) {
+        // Enable sleep mode
+        sleep_enable();
+
+        // Enter sleep mode
+        sleep_cpu();
+
+        // MCU wakes up here when Timer1 interrupt triggers
+        sleep_disable();
+    }
+    // Timer reached 1 minute, continue execution
+}
+
+
 void setup() {
   // Initialize Serial for debugging
   Serial.begin(9600);
@@ -57,6 +97,8 @@ void setup() {
 
   // Initialize sensors
   sensors.begin();
+
+  setupTimer1();
 
   if (!bmp.begin(BMP_CS)) { // Initialize BMP280 with SPI
     Serial.println("Error: BMP280 not found!");
@@ -118,7 +160,7 @@ void loop() {
   digitalWrite(3, HIGH);
   delay(5);  // Wait for a second before sending again
   digitalWrite(3, LOW);
-  delay(2000);
+  waitForMinute();
 }
 
 // Function to measure temperature

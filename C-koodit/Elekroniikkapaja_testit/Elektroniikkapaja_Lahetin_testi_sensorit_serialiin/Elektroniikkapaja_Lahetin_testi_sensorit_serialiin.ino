@@ -9,6 +9,7 @@
 #define BMP_CS PB2               // Use PB4 as Chip Select for BMP280
 #define ADDRESS 0x40             // SEN0546 I2C address
 
+
 // Global variables
 float temp = 0.0;
 float pressure = 0.0;
