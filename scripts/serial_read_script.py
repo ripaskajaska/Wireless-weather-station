@@ -10,7 +10,7 @@ import csv
 
 curr_platform = platform.system()
 
-api_password = "peij00niSetit"
+api_password = "" #This is not public
 desired_pid = '0x6015'
 desired_vid = '0x0403'
 desired_sn = 'D3OHLEJRA'
